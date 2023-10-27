@@ -12,8 +12,12 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/react";
 import postBoards from "../helperFuction/postBoard";
+import { useRef, useState } from "react";
 
-function CreateBoard({ newBoard, setNewBoard, setData }) {
+function CreateBoard({ setData }) {
+  const [activeBtn, setActiveBtn] = useState("");
+  const inputRef = useRef();
+
   return (
     <Popover placement="bottom" closeOnBlur={false}>
       {({ onClose }) => (
@@ -26,7 +30,7 @@ function CreateBoard({ newBoard, setNewBoard, setData }) {
               color="blackAlpha.600"
               variant="outline"
             >
-              <CardHeader textAlign="center">
+              <CardHeader textAlign="center" >
                 <Heading size="md">Create New Board</Heading>
                 <AddIcon />
               </CardHeader>
@@ -34,22 +38,22 @@ function CreateBoard({ newBoard, setNewBoard, setData }) {
           </PopoverTrigger>
           <PopoverContent>
             <PopoverArrow />
-            <PopoverBody bg="blackAlpha.600" color="white" >
+            <PopoverBody bg="blackAlpha.600" color="white">
               <Input
                 placeholder="Board Name"
-                value={newBoard}
-                _placeholder={{color:"white"}}
+                _placeholder={{ color: "white" }}
                 fontWeight={900}
-                onChange={(e) => setNewBoard(e.target.value)}
+                ref={inputRef}
+                onChange={(e) => setActiveBtn(e.target.value)}
               />
               <Button
                 colorScheme="green"
                 mt={1}
-                isDisabled={newBoard?false:true}
+                isDisabled={ activeBtn ? false : true}
                 onClick={() => {
-                  postBoards({ name: newBoard }).then((data) => {
-                    setData((prev) => [...prev, data]);
-                    setNewBoard("");
+                  postBoards({ name: inputRef.current.value }).then((data) => {
+                    setData(data);
+                    inputRef.current.value="";
                   });
                   onClose();
                 }}

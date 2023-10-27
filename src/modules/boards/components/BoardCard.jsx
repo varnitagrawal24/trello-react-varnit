@@ -2,7 +2,9 @@ import { Card, CardHeader, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 function BoardCard({ data }) {
+
   const navigate=useNavigate();
+  
   return (
     <Card
       width={250}
