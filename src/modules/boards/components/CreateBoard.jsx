@@ -30,7 +30,7 @@ function CreateBoard({ setData }) {
               color="blackAlpha.600"
               variant="outline"
             >
-              <CardHeader textAlign="center" >
+              <CardHeader textAlign="center">
                 <Heading size="md">Create New Board</Heading>
                 <AddIcon />
               </CardHeader>
@@ -49,11 +49,11 @@ function CreateBoard({ setData }) {
               <Button
                 colorScheme="green"
                 mt={1}
-                isDisabled={ activeBtn ? false : true}
+                isDisabled={activeBtn ? false : true}
                 onClick={() => {
                   postBoards({ name: inputRef.current.value }).then((data) => {
                     setData(data);
-                    inputRef.current.value="";
+                    inputRef.current.value = "";
                   });
                   onClose();
                 }}
