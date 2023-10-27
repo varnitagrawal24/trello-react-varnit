@@ -42,7 +42,7 @@ function CheckList({ checklist, cardId, handleDeleteChecklist }) {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <CheckItems checklistId={checklist.id} cardId={cardId} />
+            <CheckItems checklistId={checklist.id} checkItems={checklist.checkItems} cardId={cardId} />
           </AccordionPanel>
         </AccordionItem>
       </Accordion>

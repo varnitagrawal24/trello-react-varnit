@@ -1,6 +1,6 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Button, CloseButton, Input, Stack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import addCheckItem from "../helperFunction/addCheckitem";
 
 function AddCheckItem({ setData, checklistId }) {
@@ -38,6 +38,7 @@ function ButtonAddCheckitem({ setCheck }) {
 
 function InputAddCheckitem({ setCheck, setCheckitem, checklistId }) {
   const [inputText, setinputText] = useState("");
+  const inputRef = useRef();
 
   return (
     <Box mb={2} p={2} size="sm">
@@ -46,7 +47,7 @@ function InputAddCheckitem({ setCheck, setCheckitem, checklistId }) {
         placeholder="CheckItem Name"
         backgroundColor="white"
         color="black"
-        value={inputText}
+        ref={inputRef}
         onChange={(e) => setinputText(e.target.value)}
       />
       <Stack direction="row" mt={1}>
@@ -55,9 +56,9 @@ function InputAddCheckitem({ setCheck, setCheckitem, checklistId }) {
         colorScheme="green"
         isDisabled={!inputText ? true : false}
         onClick={() => {
-          addCheckItem({ id: checklistId, name: inputText }).then((data) => {
-            setCheckitem((prev) => [...prev, data]);
-            setinputText("");
+          addCheckItem({ id: checklistId, name: inputRef.current.value }).then((data) => {
+            setCheckitem(data);
+            inputRef.current.value="";
             setCheck((prev) => !prev);
           });
         }}
@@ -65,7 +66,7 @@ function InputAddCheckitem({ setCheck, setCheckitem, checklistId }) {
         Add
       </Button>
       <CloseButton _hover={{bg:"none"}} onClick={()=>{
-        setinputText("");
+        inputRef.current.value="";
         setCheck((prev) => !prev);
       }}/>
       </Stack>

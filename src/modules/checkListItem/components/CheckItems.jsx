@@ -1,53 +1,51 @@
-import React, { useEffect, useState } from "react";
-import getAllChecklistItem from "../helperFunction/getAllChecklistItem";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Progress,
-  Spinner,
-  Stack,
-  useDisclosure,
-} from "@chakra-ui/react";
-
+import React, { useReducer } from "react";
+import { Progress, Stack } from "@chakra-ui/react";
 import AddCheckItem from "./AddCheckItem";
 import CheckBox from "./CheckBox";
-import Loader from "../../common/Loader";
+import checkitemReduce from "../helperFunction/checkitemReduce";
 
-function CheckItems({ checklistId, cardId }) {
-  const [allChecklistItem, setAllChecklistItem] = useState();
-  const [loader, setLoader] = useState(true);
-
-  useEffect(() => {
-    getAllChecklistItem(checklistId).then((data) => {
-      setAllChecklistItem(data);
-      setLoader(false);
-    });
-  }, []);
-
-  if (loader) {
-    return <Loader />;
-  }
+function CheckItems({ checklistId, checkItems, cardId }) {
+  const [checkitemState, dispatch] = useReducer(checkitemReduce, {
+    data: [...checkItems],
+  });
+  
 
   const progressbarValue = () => {
-    const checkedValue = allChecklistItem.reduce((acc, item) => {
+    const checkedValue = checkitemState.data.reduce((acc, item) => {
       if (item.state === "complete") acc++;
       return acc;
     }, 0);
-    return (checkedValue * 100) / allChecklistItem.length;
+    return (checkedValue * 100) / checkitemState.data.length;
+  };
+
+  const handleUpdateCheckItem = (checkitemId) => {
+    dispatch({ type: "update_checkitem", payload: checkitemId });
+  };
+
+  const handleDeleteCheckItem = (checkitemId) => {
+    dispatch({ type: "delete_checkitem", payload: checkitemId });
+  };
+
+  const handleCreateCheckItem = (newCheckitemData) => {
+    dispatch({ type: "create_checkitem", payload: newCheckitemData });
   };
 
   return (
     <Stack>
-      <AddCheckItem setData={setAllChecklistItem} checklistId={checklistId} />
-      {allChecklistItem.length ? <Progress value={progressbarValue()} /> : null}
-      {allChecklistItem.map((checklistItem) => (
+      <AddCheckItem checklistId={checklistId} setData={handleCreateCheckItem}/>
+
+      {checkitemState.data.length ? (
+        <Progress value={progressbarValue()} />
+      ) : null}
+
+      {checkitemState.data.map((checklistItem) => (
         <CheckBox
           key={checklistItem.id}
           checklistItem={checklistItem}
-          setAllChecklistItem={setAllChecklistItem}
           checklistId={checklistId}
           cardId={cardId}
+          handleUpdateCheckItem={handleUpdateCheckItem}
+          handleDeleteCheckItem={handleDeleteCheckItem}
         />
       ))}
     </Stack>
