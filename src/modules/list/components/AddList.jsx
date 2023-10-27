@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import postList from "../helperFunction/createList";
+import { useParams } from "react-router-dom";
 
 function ButtonAddList({ setCheck }) {
   return (
@@ -31,8 +32,11 @@ function ButtonAddList({ setCheck }) {
   );
 }
 
-function InputAddList({ setCheck, id, setList }) {
+function InputAddList({ setCheck, createList }) {
+
+  const {id} = useParams();
   const [inputText, setinputText] = useState("");
+  const inputRef=useRef();
 
   return (
     <Box
@@ -47,7 +51,7 @@ function InputAddList({ setCheck, id, setList }) {
         placeholder="List Name"
         backgroundColor="white"
         color="black"
-        value={inputText}
+        ref={inputRef}
         onChange={(e) => setinputText(e.target.value)}
       />
       <Stack direction="row" mt={2}>
@@ -56,8 +60,8 @@ function InputAddList({ setCheck, id, setList }) {
           isDisabled={!inputText ? true : false}
           onClick={() => {
             postList({ id, name: inputText }).then((data) => {
-              setList((prev) => [...prev, data]);
-              setinputText("");
+              createList(data);
+              inputRef.current.value="";
               setCheck((prev) => !prev);
             });
           }}
@@ -69,7 +73,7 @@ function InputAddList({ setCheck, id, setList }) {
           color="white"
           _hover={{ bg: "none" }}
           onClick={() => {
-            setinputText("");
+            inputRef.current.value="";
             setCheck((prev) => !prev);
           }}
         />
@@ -78,7 +82,7 @@ function InputAddList({ setCheck, id, setList }) {
   );
 }
 
-function AddList({ id, setList }) {
+function AddList({createList}) {
   const [check, setCheck] = useState(true);
 
   return (
@@ -86,7 +90,7 @@ function AddList({ id, setList }) {
       {check ? (
         <ButtonAddList setCheck={setCheck} />
       ) : (
-        <InputAddList setCheck={setCheck} id={id} setList={setList} />
+        <InputAddList setCheck={setCheck} createList={createList}/>
       )}
     </Box>
   );

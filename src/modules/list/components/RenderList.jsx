@@ -1,10 +1,10 @@
 import List from "./List";
 
-function RenderList({ list, deleteFuncton }) {
+function RenderList({ list, deleteList }) {
   return (
     <>
       {list.map((ele) => (
-        <List key={ele.id} data={ele} deleteFunction={deleteFuncton} />
+        <List key={ele.id} data={ele} handleDeleteList={deleteList} />
       ))}
     </>
   );

@@ -12,15 +12,15 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import deleteList from "../helperFunction/deleteList";
 import DeleteBox from "../../common/DeleteBox";
 
-function List({ data, deleteFunction }) {
-  const { isOpen, onOpen, onClose } = useDisclosure(); 
+function List({ data, handleDeleteList }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleDeleteFunction=()=>{
+  const handleDeleteFunction = () => {
     deleteList(data.id).then((data) => {
-      deleteFunction(data.id);
+      handleDeleteList(data.id);
       onClose();
-    })
-  }
+    });
+  };
 
   return (
     <Box>
@@ -46,7 +46,11 @@ function List({ data, deleteFunction }) {
         </CardBody>
       </Card>
 
-      <DeleteBox handleDeleteFunction={handleDeleteFunction} onClose={onClose} isOpen={isOpen}/>
+      <DeleteBox
+        handleDeleteFunction={handleDeleteFunction}
+        onClose={onClose}
+        isOpen={isOpen}
+      />
     </Box>
   );
 }
