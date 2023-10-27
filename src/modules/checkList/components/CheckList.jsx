@@ -13,39 +13,44 @@ import { CheckItems } from "../../checkListItem";
 import deleteChecklist from "../helperFunction/deleteChecklist";
 import DeleteBox from "../../common/DeleteBox";
 
-function CheckList({ checklist, cardId, deleteFunction }) {
+function CheckList({ checklist, cardId, handleDeleteChecklist }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { isOpen, onOpen, onClose } = useDisclosure(); 
-
-  const handleDeleteFunction=()=>{
+  const handleDeleteFunction = () => {
     deleteChecklist(checklist.id).then(() => {
-      deleteFunction(checklist.id);
+      handleDeleteChecklist(checklist.id);
       onClose();
-    })
-  }
+    });
+  };
 
   return (
     <>
-    <Accordion allowToggle mb={5}>
-      <AccordionItem>
-        <h2>
-          <AccordionButton>
-            <Box as="span" flex="1" textAlign="left">
-              <CheckIcon /> {checklist.name} 
-            </Box>
-            <DeleteIcon onClick={(e)=>{
-              e.stopPropagation();
-              onOpen();
-            }}/>
-            <AccordionIcon />
-          </AccordionButton>
-        </h2>
-        <AccordionPanel pb={4}>
-          <CheckItems checklistId={checklist.id} cardId={cardId}/>
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
-    <DeleteBox handleDeleteFunction={handleDeleteFunction} onClose={onClose} isOpen={isOpen}/>
+      <Accordion allowToggle mb={5}>
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex="1" textAlign="left">
+                <CheckIcon /> {checklist.name}
+              </Box>
+              <DeleteIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpen();
+                }}
+              />
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <CheckItems checklistId={checklist.id} cardId={cardId} />
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+      <DeleteBox
+        handleDeleteFunction={handleDeleteFunction}
+        onClose={onClose}
+        isOpen={isOpen}
+      />
     </>
   );
 }

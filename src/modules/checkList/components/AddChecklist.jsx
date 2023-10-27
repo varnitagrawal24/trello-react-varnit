@@ -1,9 +1,9 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Button, CloseButton, Input, Stack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import addChecklist from "../helperFunction/addChecklist";
 
-function AddChecklist({ setData, cardId }) {
+function AddChecklist({ createChecklist, cardId }) {
   const [check, setCheck] = useState(true);
 
   return (
@@ -13,7 +13,7 @@ function AddChecklist({ setData, cardId }) {
       ) : (
         <InputAddChecklist
           setCheck={setCheck}
-          setChecklist={setData}
+          setChecklist={createChecklist}
           cardId={cardId}
         />
       )}
@@ -31,6 +31,7 @@ function ButtonAddChecklist({ setCheck }) {
 
 function InputAddChecklist({ setCheck, setChecklist, cardId }) {
   const [inputText, setinputText] = useState("");
+  const inputRef = useRef();
 
   return (
     <Box mb={2} p={2}>
@@ -38,7 +39,7 @@ function InputAddChecklist({ setCheck, setChecklist, cardId }) {
         placeholder="Checklist Name"
         backgroundColor="white"
         color="black"
-        value={inputText}
+        ref={inputRef}
         onChange={(e) => setinputText(e.target.value)}
       />
       <Stack direction="row" mt={1}>
@@ -46,11 +47,13 @@ function InputAddChecklist({ setCheck, setChecklist, cardId }) {
           colorScheme="green"
           isDisabled={!inputText ? true : false}
           onClick={() => {
-            addChecklist({ id: cardId, name: inputText }).then((data) => {
-              setChecklist((prev) => [...prev, data]);
-              setinputText("");
-              setCheck((prev) => !prev);
-            });
+            addChecklist({ id: cardId, name: inputRef.current.value }).then(
+              (data) => {
+                setChecklist(data);
+                inputRef.current.value = "";
+                setCheck((prev) => !prev);
+              }
+            );
           }}
         >
           Add
@@ -58,7 +61,7 @@ function InputAddChecklist({ setCheck, setChecklist, cardId }) {
         <CloseButton
           _hover={{ bg: "none" }}
           onClick={() => {
-            setinputText("");
+            inputRef.current.value = "";
             setCheck((prev) => !prev);
           }}
         />
