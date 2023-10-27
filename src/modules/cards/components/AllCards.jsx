@@ -1,35 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import getAllCard from "../helperFunction/getAllCards";
-import { Spinner } from "@chakra-ui/react";
 import SingleCard from "./SingleCard";
 import AddCard from "./AddCard";
 import Loader from "../../common/Loader";
+import cardReduce from "../helperFunction/cardReduce";
 
 function AllCards({ id }) {
-  const [data, setData] = useState();
-  const [loader, setLoader] = useState(true);
+  const [cardState, dispatch] = useReducer(cardReduce, {
+    data: [],
+    loader: true,
+  });
 
   useEffect(() => {
     getAllCard(id).then((data) => {
-      setData(data);
-      setLoader(false);
+      dispatch({ type: "card_data_resolve", payload: data });
     });
   }, []);
 
-  if (loader) {
-    return <Loader/>
+  if (cardState.loader) {
+    return <Loader />;
   }
 
-  const deleteFunction = (cardId) => {
-    setData(data.filter((ele) => ele.id != cardId));
+  const handleDeleteCard = (cardId) => {
+    dispatch({ type: "delete_card", payload: cardId });
+  };
+
+  const handleCreateCard = (newCardData) => {
+    dispatch({ type: "create_card", payload: newCardData });
   };
 
   return (
     <div>
-      {data.map((ele) => (
-        <SingleCard key={ele.id} data={ele} deleteFunction={deleteFunction} />
+      {cardState.data.map((ele) => (
+        <SingleCard key={ele.id} data={ele} deleteFunction={handleDeleteCard} />
       ))}
-      <AddCard setData={setData} listId={id} />
+      <AddCard listId={id} createCard={handleCreateCard} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Button, CloseButton, Input, Stack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import addCard from "../helperFunction/addCard";
 
-function AddCard({ setData, listId }) {
+function AddCard({ listId, createCard }) {
   const [check, setCheck] = useState(true);
 
   return (
@@ -11,7 +11,11 @@ function AddCard({ setData, listId }) {
       {check ? (
         <ButtonAddCard setCheck={setCheck} />
       ) : (
-        <InputAddCard setCheck={setCheck} setCard={setData} listId={listId} />
+        <InputAddCard
+          setCheck={setCheck}
+          createCard={createCard}
+          listId={listId}
+        />
       )}
     </Box>
   );
@@ -31,8 +35,9 @@ function ButtonAddCard({ setCheck }) {
   );
 }
 
-function InputAddCard({ setCheck, setCard, listId }) {
+function InputAddCard({ setCheck, createCard, listId }) {
   const [inputText, setinputText] = useState("");
+  const inputRef = useRef();
 
   return (
     <Box bg="gray.400" color="white" mb={2} p={2}>
@@ -40,7 +45,7 @@ function InputAddCard({ setCheck, setCard, listId }) {
         placeholder="Card Name"
         backgroundColor="white"
         color="black"
-        value={inputText}
+        ref={inputRef}
         onChange={(e) => setinputText(e.target.value)}
       />
       <Stack direction="row" mt={2}>
@@ -49,8 +54,8 @@ function InputAddCard({ setCheck, setCard, listId }) {
           isDisabled={!inputText ? true : false}
           onClick={() => {
             addCard({ id: listId, name: inputText }).then((data) => {
-              setCard((prev) => [...prev, data]);
-              setinputText("");
+              createCard(data);
+              inputRef.current.value = "";
               setCheck((prev) => !prev);
             });
           }}
@@ -58,11 +63,11 @@ function InputAddCard({ setCheck, setCard, listId }) {
           Add
         </Button>
         <CloseButton
-        size="lg"
-        color="blackAlpha.900"
+          size="lg"
+          color="blackAlpha.900"
           _hover={{ bg: "none" }}
           onClick={() => {
-            setinputText("");
+            inputRef.current.value = "";
             setCheck((prev) => !prev);
           }}
         />
