@@ -33,10 +33,9 @@ function ButtonAddList({ setCheck }) {
 }
 
 function InputAddList({ setCheck, createList }) {
-
-  const {id} = useParams();
+  const { id } = useParams();
   const [inputText, setinputText] = useState("");
-  const inputRef=useRef();
+  const inputRef = useRef();
 
   return (
     <Box
@@ -61,7 +60,7 @@ function InputAddList({ setCheck, createList }) {
           onClick={() => {
             postList({ id, name: inputText }).then((data) => {
               createList(data);
-              inputRef.current.value="";
+              inputRef.current.value = "";
               setCheck((prev) => !prev);
             });
           }}
@@ -73,7 +72,7 @@ function InputAddList({ setCheck, createList }) {
           color="white"
           _hover={{ bg: "none" }}
           onClick={() => {
-            inputRef.current.value="";
+            inputRef.current.value = "";
             setCheck((prev) => !prev);
           }}
         />
@@ -82,7 +81,7 @@ function InputAddList({ setCheck, createList }) {
   );
 }
 
-function AddList({createList}) {
+function AddList({ createList }) {
   const [check, setCheck] = useState(true);
 
   return (
@@ -90,7 +89,7 @@ function AddList({createList}) {
       {check ? (
         <ButtonAddList setCheck={setCheck} />
       ) : (
-        <InputAddList setCheck={setCheck} createList={createList}/>
+        <InputAddList setCheck={setCheck} createList={createList} />
       )}
     </Box>
   );
